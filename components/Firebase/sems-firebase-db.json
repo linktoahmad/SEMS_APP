@@ -1,0 +1,65 @@
+{
+  "sems000" : {
+    "amps" : 0,
+    "days" : "1,2,0",
+    "hours" : "1,4,0",
+    "unit" : 0,
+    "volt" : 220,
+    "watt" : 20,
+    "years" : "1,2,0"
+  },
+  "sems001" : {
+    "amps" : 1,
+    "days" : "1,2,1",
+    "hours" : "1,2,1,4.003",
+    "unit" : 4.003,
+    "volt" : 221,
+    "watt" : 22,
+    "years" : "1,2,1"
+  },
+  "sems002" : {
+    "amps" : 2,
+    "days" : "1,2,2",
+    "hours" : "1,4,3",
+    "unit" : 2,
+    "volt" : 222,
+    "watt" : 22,
+    "years" : "1,2,2"
+  },
+  "sems003" : {
+    "amps" : 3,
+    "days" : "1,2,3",
+    "hours" : "1,4,3",
+    "unit" : 3,
+    "volt" : 223,
+    "watt" : 23,
+    "years" : "1,2,3"
+  },
+  "sems004" : {
+    "amps" : 4,
+    "days" : "1,2,4",
+    "hours" : "1,4,4",
+    "unit" : 301,
+    "volt" : 224,
+    "watt" : 24,
+    "years" : "1,2,4"
+  },
+  "sems005" : {
+    "amps" : 5,
+    "days" : "1,2,5",
+    "hours" : "1,4,5",
+    "unit" : 5,
+    "volt" : 225,
+    "watt" : 25,
+    "years" : "1,2,5"
+  },
+  "sems006" : {
+    "amps" : 0.416,
+    "days" : "1,2,6",
+    "hours" : "1,4,6",
+    "unit" : 0.035,
+    "volt" : 229.2,
+    "watt" : 47.6,
+    "years" : "1,2,6"
+  }
+}
