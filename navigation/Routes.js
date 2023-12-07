@@ -7,6 +7,7 @@ import AuthStack from './AuthStack';
 import AppStack from './AppStack';
 import { AuthUserContext } from './AuthUserProvider';
 import Spinner from '../components/Spinner';
+import { DataProvider } from '../screens/DataContext';
 
 export default function Routes() {
   const { user, setUser } = useContext(AuthUserContext);
@@ -14,7 +15,7 @@ export default function Routes() {
 
   useEffect(() => {
     // onAuthStateChanged returns an unsubscriber
-    const unsubscribeAuth = auth.onAuthStateChanged(async authUser => {
+    const unsubscribeAuth = auth.onAuthStateChanged(async (authUser) => {
       try {
         await (authUser ? setUser(authUser) : setUser(null));
         setIsLoading(false);
@@ -33,7 +34,13 @@ export default function Routes() {
 
   return (
     <NavigationContainer theme={navigationTheme}>
-      {user ? <AppStack /> : <AuthStack />}
+      {user ? (
+        <DataProvider>
+          <AppStack />
+        </DataProvider>
+      ) : (
+        <AuthStack />
+      )}
     </NavigationContainer>
   );
 }
