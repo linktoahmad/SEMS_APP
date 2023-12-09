@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { StyleSheet, TextInput } from "react-native";
 import ProgressCircle from "react-native-progress-circle";
 import * as Notifications from "expo-notifications";
@@ -6,7 +6,7 @@ import { Block, Text, Switch, Button } from "../components";
 import { theme } from "../constants";
 import AsyncStorage from "@react-native-community/async-storage";
 import firebase from "firebase";
-import { meterId } from "./SlectMeter.js";
+import {DataContext} from './DataContext.js';
 
 const STORAGE_KEY = "@save_unit";
 const STORAGE_KEY2 = "@save_Load";
@@ -28,6 +28,9 @@ Notifications.setNotificationHandler({
 });
 
 const App = () => {
+
+  const {meterId} = useContext(DataContext)
+
   const getData = () => {
     firebase
       .database()
@@ -156,7 +159,7 @@ const App = () => {
   return (
     <Block>
       <Block flex={false} row center space="between" style={styles.header}>
-        <Text h1 bold>
+        <Text  bold>
           Set Limit
         </Text>
         <Text h2 bold center style={{ color: theme.colors.secondary }}>

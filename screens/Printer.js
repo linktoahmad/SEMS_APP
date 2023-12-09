@@ -1,11 +1,12 @@
-import React, {useEffect } from "react";
+import React, {useEffect,useContext } from "react";
 import { Block, Text, Button } from "../components";
 import { theme } from "../constants";
 import { StyleSheet, Image } from "react-native";
 import * as Print from "expo-print";
 import * as Sharing from "expo-sharing";
 import firebase from "firebase";
-import { meterId } from "./SlectMeter.js";
+import {DataContext} from './DataContext.js';
+
 
 var unit_value = 0;
 var unit_cost = 0;
@@ -47,6 +48,7 @@ var current_year = d.getFullYear();
 
 
 const App = () => {
+  const {meterId} = useContext(DataContext)
 
   const getData = () => {
     //getting days data
@@ -993,7 +995,7 @@ async function Print_report() {
     return (
       <Block>
         <Block flex={false} row center space="between" style={styles.header}>
-          <Text h1 bold>
+          <Text  bold>
             Print Report
           </Text>
           <Text h2 bold center style={{ color: theme.colors.secondary }}>

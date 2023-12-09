@@ -6,7 +6,8 @@ import { Dimensions } from "react-native";
 import { Block, Text, Button } from "../components";
 import { theme } from "../constants";
 import firebase from "firebase";
-import { meterId } from "./SlectMeter.js";
+import {DataContext} from './DataContext.js';
+
 
 //getting screen width to maintain UI and Ux
 const screenWidth = Dimensions.get("window").width;
@@ -17,7 +18,7 @@ const chartConfig = {
   backgroundGradientFrom: "#ffffff",
   backgroundGradientTo: "#ffffff",
   color: (opacity = 1) => `rgba(3, 49, 130, ${opacity})`,
-  propsForDots: {
+propsForDots: {
     r: "1.5",
 }
 };
@@ -53,9 +54,11 @@ var y = [];
 //class daily report containing firebase and rendering
 class DailyReport extends Component {
   // setting state for data -> daily usage data
+  static contextType = DataContext;
+
   state = {
     Daily_Usage_data: 0,
-  };
+      };
 
   // setting up mount to mounting on virtual representation
   _isMounted = false;
@@ -64,6 +67,7 @@ class DailyReport extends Component {
   //basically refresh the screen after data update
   // -thats what i think-
   componentDidMount() {
+    const { meterId } = this.context;
     //setting mount true and will be false after refresh
     //so that memory does not leak after too many refreshes
     // android is both shit and awesome at same time
@@ -80,14 +84,13 @@ class DailyReport extends Component {
           if (this._isMounted) {
             //snapshot of fetched value
             y = snapshot.val();
-            console.log(y)
             //changing state of current value
             //alert(y)
             
             // changed successfully
           }
         });
-        this.setState({ Daily_Usage_data: ["1","2","3"] });
+this.setState({ Daily_Usage_data: ["1","2","3"] });
       //changing state of current value
 
       // changed successfully
@@ -105,7 +108,7 @@ class DailyReport extends Component {
   render() {
     const { navigation } = this.props;
     const x = this.state.Daily_Usage_data;
-
+    
     // converting ["","",""] to [ ,  , ] and adding  current unit value to string
     const update = x.toString().replace(/, +/g, ",").split(",").map(Number);
 
@@ -130,7 +133,7 @@ class DailyReport extends Component {
       .map(Number)
       .reduce((a, b) => a + b, 0);
 
-      //watts to kwh then * with base price eg 5.99
+    //watts to kwh then * with base price eg 5.99
     const cost =
       (((x
         .toString()
@@ -171,9 +174,11 @@ class DailyReport extends Component {
       hr_list.push(strTime);
 
     return (
+      <DataContext.Consumer>
+        {({meterId})=>
       <View style={{ flex: 5 }}>
         <Block flex={false} row center space="between" style={styles.header}>
-          <Text h1 bold>
+          <Text  bold>
             Todays Report
           </Text>
           <Text h2 bold center style={{ color: theme.colors.secondary }}>
@@ -195,9 +200,9 @@ class DailyReport extends Component {
             height={screenHeight - screenWidth - 100}
             verticalLabelRotation={-90}
             fromZero={true}
-            chartConfig={chartConfig}
+chartConfig={chartConfig}
             bezier
-          />
+                      />
           <Text
             center
             style={{ fontWeight: "bold", fontSize: screenWidth * 0.04 }}
@@ -253,7 +258,8 @@ class DailyReport extends Component {
             </Button>
           </Block>
         </Block>
-      </View>
+      </View>}
+    </DataContext.Consumer>
     );
   }
 }

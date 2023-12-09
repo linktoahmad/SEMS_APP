@@ -1,20 +1,18 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { StyleSheet, TextInput, View } from "react-native";
 import { Block, Text, Button } from "../components";
 import { theme } from "../constants";
 import CustomMultiPicker from "react-native-multiple-select-list";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { first_id } from "./OneTimeScreen.js"; // the meter id that user entered on first login!
+import {DataContext} from './DataContext.js';
 
-const STORAGE_KEY = "@save_selected_meter_id";
+
+const STORAGE_KEY = "@save_meterId";
 const STORAGE_KEY2 = "@save_array";
 
-let meterId = "sems000"; // if meter id is null or does not match regex etc... must match case sems0000
-
 const Meters = () => {
-  const [selected_meter_id, set_selected_meter_id] = useState("");
-
-  var default_meter_id = first_id.toString();
+  const {meterId, setMeterId} =  useContext(DataContext)
+  var default_meter_id = meterId.toString();
 
   const [userList, set_userList] = useState([default_meter_id]);
 
@@ -22,8 +20,8 @@ const Meters = () => {
 
   const saveData = async () => {
     try {
-      await AsyncStorage.setItem(STORAGE_KEY, selected_meter_id);
-      alert("meter " + selected_meter_id.toString() + " selected ✅");
+      await AsyncStorage.setItem(STORAGE_KEY, meterId);
+      alert("meter " + meterId.toString() + " selected ✅");
     } catch (e) {
       alert("Failed to save the data to the storage ❌");
     }
@@ -31,12 +29,12 @@ const Meters = () => {
 
   const readData = async () => {
     try {
-      const user_selected_meter_id = await AsyncStorage.getItem(STORAGE_KEY);
+      const user_meterId = await AsyncStorage.getItem(STORAGE_KEY);
 
-      if (user_selected_meter_id !== null) {
-        set_selected_meter_id(user_selected_meter_id);
+      if (user_meterId !== null) {
+        setMeterId(user_meterId);
       } else {
-        set_selected_meter_id(userList[0]);
+        setMeterId(userList[0]);
       }
     } catch (e) {
       alert("Failed to fetch the data from storage ❌");
@@ -86,9 +84,9 @@ const Meters = () => {
 
   const delete_element = () => {
     if (userList.length > 1) {
-      alert(selected_meter_id + " has been deleted 🗑️");
-      userList.splice(Number(userList.indexOf(selected_meter_id)), 1);
-      set_selected_meter_id("");
+      alert(meterId + " has been deleted 🗑️");
+      userList.splice(Number(userList.indexOf(meterId)), 1);
+      setMeterId("");
       save_array();
     } else alert("Last meter id cannot be deleted ❌");
   };
@@ -98,16 +96,15 @@ const Meters = () => {
   }, []);
 
   var onSubmitEditing = () => {
-    if (!selected_meter_id) return;
+    if (!meterId) return;
 
-    saveData(selected_meter_id.toString());
+    saveData(meterId.toString());
   };
 
-  const onChangeText = (user_selected_meter_id) => {
-    set_selected_meter_id(user_selected_meter_id.toString());
+  const onChangeText = (user_meterId) => {
+    if(user_meterId.length){ setMeterId(user_meterId.toString())}
   };
 
-  meterId = selected_meter_id;
   return (
     <Block>
       <Block flex={false} row center space="between" style={styles.header}>
@@ -147,13 +144,13 @@ const Meters = () => {
           selectedIconName={"ios-checkmark-circle-outline"}
           unselectedIconName={"ios-radio-button-off-outline"}
           scrollViewHeight={370}
-          selected={userList[Number(userList.indexOf(selected_meter_id))]} // list of option which is selected by default
+          selected={userList[Number(userList.indexOf(meterId))]} // list of option which is selected by default
         />
       </Block>
 
       <Text bold center>
         {"Selected meter is "}
-        {selected_meter_id}
+        {meterId}
       </Text>
 
       <View style={styles.buton}>
@@ -189,7 +186,6 @@ const Meters = () => {
         </TouchableOpacity>
       </Block>*/
 export default Meters;
-export { meterId };
 
 const styles = StyleSheet.create({
   header: {

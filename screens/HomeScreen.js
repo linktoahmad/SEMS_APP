@@ -25,9 +25,7 @@ class HomeScreen extends Component {
 
   handleTab = tab => {
     const { categories } = this.props;
-    const filtered = categories.filter(category =>
-      category.tags.includes(tab.toLowerCase())
-    );
+    const filtered = categories
 
     this.setState({ active: tab, categories: filtered });
   };
@@ -61,17 +59,11 @@ class HomeScreen extends Component {
         <Block flex={false} row center space="between" style={styles.header}>
           <Text h1 bold>
             Home
-          </Text>
-                  
+          </Text>   
           <Button onPress={() => navigation.navigate("Settings")}>
             <Image source={profile.avatar} style={styles.avatar} />
           </Button>
         </Block>
-
-        <Block flex={false} row style={styles.tabs}>
-          {tabs.map(tab => this.renderTab(tab))}
-        </Block>
-
         <ScrollView
           showsVerticalScrollIndicator={false}
           style={{ paddingVertical: theme.sizes.base * 2 }}

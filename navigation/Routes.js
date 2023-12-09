@@ -7,7 +7,7 @@ import AuthStack from './AuthStack';
 import AppStack from './AppStack';
 import { AuthUserContext } from './AuthUserProvider';
 import Spinner from '../components/Spinner';
-import { DataProvider } from '../screens/DataContext';
+import DataProvider  from '../screens/DataContext';
 
 export default function Routes() {
   const { user, setUser } = useContext(AuthUserContext);

@@ -1,43 +1,36 @@
-import React, { createContext, useReducer, useContext } from 'react';
-
-// Define your initial state
-const initialState = {
-  meterId: 'sems000' // Add your shared data here
-};
+import React, { createContext, useEffect, useState } from 'react';
+import AsyncStorage from "@react-native-community/async-storage";
 
 // Create a context
-const DataContext = createContext();
-
-// Create a reducer function
-const dataReducer = (state, action) => {
-  switch (action.type) {
-    case 'UPDATE_SHARED_DATA':
-      return {
-        ...state,
-        meterId: action.payload
-      };
-    // Add more cases if needed for other actions
-    default:
-      return state;
-  }
-};
-
-// Create a custom hook to use the context and dispatch
-export const useDataDispatch = () => {
-  const context = useContext(DataContext);
-  if (!context) {
-    throw new Error('useDataDispatch must be used within a DataProvider');
-  }
-  return context.dispatch;
-};
+export const DataContext = createContext();
 
 // Create the DataProvider component
-export const DataProvider = ({ children }) => {
-  const [state, dispatch] = useReducer(dataReducer, initialState);
+const DataProvider = ({ children }) => {
+  const [meterId, setMeterId] = useState("");
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // Get the user_meterId from AsyncStorage
+        const user_meterId = await AsyncStorage.getItem("@save_meterId");
+
+        // If user_meterId is available, set it to the meterId state
+        if (user_meterId) {
+          setMeterId(user_meterId);
+        }
+      } catch (error) {
+        console.error("Error fetching user_meterId", error);
+      }
+    };
+
+    fetchData();
+  }, []); // Empty dependency array ensures useEffect runs only once on mount
 
   return (
-    <DataContext.Provider value={{ state, dispatch }}>
+    <DataContext.Provider value={{ meterId, setMeterId }}>
       {children}
     </DataContext.Provider>
   );
 };
+
+export default DataProvider;
