@@ -3,13 +3,14 @@ import { StyleSheet, Image, View, TouchableOpacity } from "react-native";
 import { Button, Block, Text, Switch } from "../components";
 import { theme } from "../constants";
 import { logout } from "../components/Firebase/firebase";
-import { meterId } from "./SlectMeter.js";
-import { first_id } from "./OneTimeScreen.js";
+import {DataContext} from './DataContext.js';
+
 
 class Settings extends Component {
   state = {
     selectedValue: null,
   };
+  static contextType = DataContext;
   about() {
     alert(
       "    ⚡SEMS V(1.0)⚡\nMade By Ahmed Khalil\n\n2021 © All rights reserved"
@@ -17,6 +18,7 @@ class Settings extends Component {
   }
   render() {
     const { navigation } = this.props;
+    const { meterId } = this.context;
     async function handleSignOut() {
       try {
         await logout();
@@ -24,15 +26,11 @@ class Settings extends Component {
         console.log(error);
       }
     }
-    var id;
-    if (meterId == "sems000") {
-      id = first_id;
-    } else id = meterId;
 
     return (
       <Block>
         <Block flex={false} row center space="between" style={styles.header}>
-          <Text h1 bold>
+          <Text  bold>
             Settings
           </Text>
         </Block>
@@ -45,7 +43,7 @@ class Settings extends Component {
             Meter ID
           </Text>
           <Text h1 style={{ color: theme.colors.secondary }} center>
-            {id}
+            {meterId}
           </Text>
 
           <Button gradient onPress={() => navigation.navigate("SlectMeter")}>

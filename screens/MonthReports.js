@@ -6,7 +6,8 @@ import { Dimensions } from "react-native";
 import { Block, Text, Button } from "../components";
 import { theme } from "../constants";
 import firebase from "firebase";
-import { meterId } from "./SlectMeter.js";
+import {DataContext} from './DataContext.js';
+
 
 //getting screen width to maintain UI and Ux
 const screenWidth = Dimensions.get("window").width;
@@ -50,6 +51,8 @@ var x;
 //class daily report containing firebase and rendering
 class DailyReport extends Component {
   // setting state for data -> daily usage data
+  static contextType = DataContext;
+
   state = {
     Daily_Usage_data: 0,
     unit_data: 0,
@@ -62,6 +65,7 @@ class DailyReport extends Component {
   //basically refresh the screen after data update
   // -thats what i think-
   componentDidMount() {
+    const { meterId } = this.context;
     //setting mount true and will be false after refresh
     //so that memory does not leak after too many refreshes
     // android is both shit and awesome at same time
@@ -159,9 +163,11 @@ class DailyReport extends Component {
 
 
     return (
+      <DataContext.Consumer>
+        {({meterId})=>
       <View style={{ flex: 5 }}>
         <Block flex={false} row center space="between" style={styles.header}>
-          <Text h1 bold>
+          <Text  bold>
             Monthly Report
           </Text>
           <Text h2 bold center style={{ color: theme.colors.secondary }}>
@@ -240,7 +246,8 @@ class DailyReport extends Component {
             </Button>
           </Block>
         </Block>
-      </View>
+      </View>}
+    </DataContext.Consumer>
     );
   }
 }

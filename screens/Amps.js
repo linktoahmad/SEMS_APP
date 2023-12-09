@@ -7,7 +7,7 @@ import Speedometer from "react-native-speedometer-chart";
 import { Block, Text, Button } from "../components";
 import { theme } from "../constants";
 import firebase from "firebase";
-import { meterId } from "./SlectMeter.js";
+import {DataContext} from './DataContext.js';
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -19,7 +19,7 @@ Notifications.setNotificationHandler({
 
 class Amps extends Component {
   _isMounted = false;
-
+  static contextType = DataContext;
   state = {
     isModalVisible: false,
     amps_value: [],
@@ -27,6 +27,7 @@ class Amps extends Component {
 
   componentDidMount() {
     this._isMounted = true;
+    const { meterId } = this.context;
     const readUsersData = () => {
       firebase
         .database()
@@ -56,9 +57,11 @@ class Amps extends Component {
       schedulePushNotification();
     }
     return (
-      <Block>
-         <Block flex={false} row center space="between" style={styles.header}>
-          <Text h1 bold>
+      <DataContext.Consumer>
+      {({meterId})=>
+            <Block>
+        <Block flex={false} row center space="between" style={styles.header}>
+          <Text  bold>
             Usage Load
           </Text>
           <Text h2 bold center style={{ color: theme.colors.secondary }}>
@@ -202,7 +205,7 @@ class Amps extends Component {
             </View>
           </Modal>
           <Text center style={{ fontWeight: "bold", fontSize: 15 }}>
-            Current Load
+            Current Load 
           </Text>
           <Text
             center
@@ -225,7 +228,8 @@ class Amps extends Component {
             </Button>
           </Block>
         </Block>
-      </Block>
+      </Block>}
+      </DataContext.Consumer>
     );
   }
 }
@@ -247,4 +251,4 @@ const styles = StyleSheet.create({
   header: {
     paddingHorizontal: theme.sizes.base * 2,
   },
-});
+  });

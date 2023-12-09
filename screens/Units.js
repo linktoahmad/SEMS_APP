@@ -6,7 +6,7 @@ import Modal from "react-native-modal";
 import { Block, Text, Button } from "../components";
 import { theme } from "../constants";
 import firebase from "firebase";
-import { meterId } from "./SlectMeter.js";
+import {DataContext} from './DataContext.js';
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -18,7 +18,7 @@ Notifications.setNotificationHandler({
 
 class unit extends Component {
   _isMounted = false;
-
+  static contextType = DataContext;
   state = {
     isModalVisible: false,
     unit_value: [],
@@ -27,6 +27,7 @@ class unit extends Component {
 
   componentDidMount() {
     this._isMounted = true;
+    const { meterId } = this.context;
     const readUsersData = () => {
       firebase
         .database()
@@ -34,9 +35,9 @@ class unit extends Component {
         .on("value", (snapshot) => {
           if (this._isMounted) {
             const y = snapshot.val();
-
+            
             this.setState({ unit_value: y });
-          }
+}
         });
 
 
@@ -65,12 +66,14 @@ class unit extends Component {
   render() {
     const unit_value = Number(this.state.unit_value);
     const m_unit_value = Number(this.state.m_unit_value);
-
+    
     
     return (
+      <DataContext.Consumer>
+        {({meterId})=>
       <Block>
-         <Block flex={false} row center space="between" style={styles.header}>
-          <Text h1 bold>
+        <Block flex={false} row center space="between" style={styles.header}>
+          <Text bold>
             Total Units
           </Text>
           <Text h2 bold center style={{ color: theme.colors.secondary }}>
@@ -212,7 +215,7 @@ class unit extends Component {
             </View>
           </Modal>
           <Text center style={{ fontWeight: "bold", fontSize: 15 }}>
-            Total Units Used
+            Total Units Used 
           </Text>
           <Text
             center
@@ -257,7 +260,8 @@ class unit extends Component {
             </Button>
           </Block>
         </Block>
-      </Block>
+      </Block>}
+      </DataContext.Consumer>
     );
   }
 }
@@ -279,4 +283,4 @@ const styles = StyleSheet.create({
   header: {
     paddingHorizontal: theme.sizes.base * 2,
   },
-});
+  });

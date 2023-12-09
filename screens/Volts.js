@@ -7,7 +7,7 @@ import Speedometer from "react-native-speedometer-chart";
 import { Block, Text, Button } from "../components";
 import { theme } from "../constants";
 import firebase from "firebase";
-import { meterId } from "./SlectMeter.js";
+import {DataContext} from './DataContext.js';
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -19,7 +19,7 @@ Notifications.setNotificationHandler({
 
 class Volts extends Component {
   _isMounted = false;
-
+  static contextType = DataContext;
   state = {
     isModalVisible: false,
     volts_value: [],
@@ -27,6 +27,7 @@ class Volts extends Component {
 
   componentDidMount() {
     this._isMounted = true;
+    const { meterId } = this.context;
     const readUsersData = () => {
       firebase
         .database()
@@ -55,9 +56,11 @@ class Volts extends Component {
       schedulePushNotification();
     }
     return (
+      <DataContext.Consumer>
+        {({meterId})=>
       <Block>
         <Block flex={false} row center space="between" style={styles.header}>
-          <Text h1 bold>
+          <Text  bold>
             Live Voltage
           </Text>
           <Text h2 bold center style={{ color: theme.colors.secondary }}>
@@ -201,7 +204,7 @@ class Volts extends Component {
             </View>
           </Modal>
           <Text center style={{ fontWeight: "bold", fontSize: 15 }}>
-            Your volts
+            Your volts 
           </Text>
           <Text
             center
@@ -225,7 +228,8 @@ class Volts extends Component {
             </Button>
           </Block>
         </Block>
-      </Block>
+      </Block>}
+      </DataContext.Consumer>
     );
   }
 }

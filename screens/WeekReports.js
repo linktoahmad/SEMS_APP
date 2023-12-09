@@ -6,7 +6,8 @@ import { Dimensions } from "react-native";
 import { Block, Text, Button } from "../components";
 import { theme } from "../constants";
 import firebase from "firebase";
-import { meterId } from "./SlectMeter.js";
+import {DataContext} from './DataContext.js';
+
 
 //getting screen width to maintain UI and Ux
 const screenWidth = Dimensions.get("window").width;
@@ -17,7 +18,6 @@ const chartConfig = {
   backgroundGradientFrom: "#ffffff",
   backgroundGradientTo: "#ffffff",
   color: (opacity = 1) => `rgba(3, 49, 130, ${opacity})`,
-  fillShadowGradientOpacity: 0.6
 };
 // chart labels and data dummy
 const data = {
@@ -36,6 +36,8 @@ var x;
 //class daily report containing firebase and rendering
 class DailyReport extends Component {
   // setting state for data -> daily usage data
+  static contextType = DataContext;
+
   state = {
     Daily_Usage_data: 0,
     watt_data: 0,
@@ -48,6 +50,7 @@ class DailyReport extends Component {
   //basically refresh the screen after data update
   // -thats what i think-
   componentDidMount() {
+    const { meterId } = this.context;
     //setting mount true and will be false after refresh
     //so that memory does not leak after too many refreshes
     // android is both shit and awesome at same time
@@ -120,16 +123,18 @@ class DailyReport extends Component {
     const watts = y;
 
     const cost =
-    ((y * h)/1000)*6;
+      ((y * h)/1000)*6;
 
 
       var day_list = [ "Sun","Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
       day_list.length=n+1;
 
     return (
+      <DataContext.Consumer>
+        {({meterId})=>
       <View style={{ flex: 5 }}>
         <Block flex={false} row center space="between" style={styles.header}>
-        <Text h1 bold>
+          <Text  bold>
             Weekly Report
           </Text>
           <Text h2 bold center style={{ color: theme.colors.secondary }}>
@@ -154,7 +159,7 @@ class DailyReport extends Component {
             chartConfig={chartConfig}
             verticalLabelRotation={-90}
             fromZero={true}
-          />
+                      />
           <Text
             center
             style={{ fontWeight: "bold", fontSize: screenWidth * 0.04 }}
@@ -210,7 +215,8 @@ class DailyReport extends Component {
             </Button>
           </Block>
         </Block>
-      </View>
+      </View>}
+    </DataContext.Consumer>
     );
   }
 }

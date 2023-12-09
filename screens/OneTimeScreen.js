@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useContext } from "react";
 import {
   Modal,
   View,
@@ -7,48 +7,25 @@ import {
   StyleSheet,
   TextInput,
 } from "react-native";
+import {DataContext} from './DataContext.js';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-var first_id = "no meter";
-const STORAGE_KEY = "@save_visibility";
-const STORAGE_KEY2 = "@save_id";
 const regex = /(sems)[0-9]{3,7}/;
 
 const OTScreen = () => {
-  const [visibility, set_visibility] = useState(true);
 
-  const [new_meter, add_new_meter] = useState("");
+  const {meterId, setMeterId} = useContext(DataContext);
+  const [meterInput, setMeterInput] = useState("");
 
-  const saveData = async () => {
-   
-      
-      AsyncStorage.setItem(STORAGE_KEY2, new_meter);
-      try {
-        await AsyncStorage.setItem(STORAGE_KEY, "false");
-      } catch (e) {
-        alert("Failed to save the data to the storage");
-      }
+  const  add_element = async () => {
+    if (meterInput.match(regex)) {
+      alert("✅" + meterInput + " Meter Up");
+    let user_List = await AsyncStorage.getItem("@save_array");
+    let newArray = [meterInput,...JSON.parse(user_List||"[]")]
+     AsyncStorage.setItem("@save_array", JSON.stringify(newArray));
+    AsyncStorage.setItem("@save_meterId", meterInput);
+      setMeterId(meterInput)
 
-      set_visibility(false);
-  };
-
-  const readData = async () => {
-    const id = await AsyncStorage.getItem(STORAGE_KEY2);
-    if (id != null) {
-      first_id = id;
-    }
-
-    const vis = await AsyncStorage.getItem(STORAGE_KEY);
-    if (vis == null) {
-      set_visibility(true);
-    }else set_visibility(false);
-  };
-
-  const add_element = () => {
-    if (new_meter.match(regex)) {
-      alert("✅" + new_meter + " Meter Up");
-      first_id = new_meter;
-      saveData();
     } else {
       alert(
         "               ⚠️\nplease enter correct Id \nId is case sensitive \neg sems000"
@@ -56,17 +33,13 @@ const OTScreen = () => {
     }
   };
 
-  useEffect(() => {
-    readData();
-  }, []);
-
   return (
     <View>
       <Modal
         animationType={"slide"}
         transparent={true}
         style={styles.ftreContainer}
-        visible={visibility} //this.state.modalVisible
+        visible={!meterId || !meterId.match(regex)}
       >
         <View style={styles.ftreContainer}>
           <View style={styles.ftreTitleContainer}>
@@ -90,7 +63,7 @@ const OTScreen = () => {
               }}
               placeholder="Add new meter"
               placeholderTextColor="grey"
-              onChangeText={(text) => add_new_meter(text)}
+            onChangeText={(text) => setMeterInput(text)}
               onSubmitEditing={add_element}
             />
 
@@ -114,7 +87,6 @@ const OTScreen = () => {
 };
 
 export default OTScreen;
-export { first_id };
 
 const styles = StyleSheet.create({
   ftreContainer: {

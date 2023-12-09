@@ -5,7 +5,8 @@ import { Block, Text } from "../components";
 import { DataTable } from "react-native-paper";
 import { theme } from "../constants";
 import firebase from "firebase";
-import { meterId } from "./SlectMeter.js";
+import {DataContext} from './DataContext.js';
+
 
 //creating bill variables
 var unit_value = 0;
@@ -26,10 +27,14 @@ class Settings extends Component {
       x: 0,
     };
   }
+  static contextType = DataContext;
+
 
   // run every time when firebase is updated react-native life cycle
   componentDidMount() {
     this._isMounted = true;
+    const { meterId } = this.context;
+
     const readUsersData = () => {
       firebase
         .database()
@@ -104,9 +109,11 @@ class Settings extends Component {
 
   render() {
     return (
+      <DataContext.Consumer>
+        {({meterId})=>
       <Block>
         <Block flex={false} row center space="between" style={styles.header}>
-          <Text h1 bold>
+          <Text  bold>
             Projected Bill
           </Text>
           <Text h2 bold center style={{ color: theme.colors.secondary }}>
@@ -203,7 +210,9 @@ class Settings extends Component {
             how bill is calculated
           </Text>
         </TouchableOpacity>
-      </Block>
+      </Block>}
+      </DataContext.Consumer>
+
     );
   }
 }
