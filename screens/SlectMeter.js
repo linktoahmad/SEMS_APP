@@ -46,48 +46,40 @@ const Meters = () => {
     } else set_userList(userList);
   };
 
-  const save_array = async () => {
-    try {
-      await AsyncStorage.setItem(STORAGE_KEY2, JSON.stringify(userList));
-    } catch (e) {
-      alert("Failed to save the data to the storage ❌");
-    }
-    set_userList(userList);
-    onRefresh();
-  };
-
-  const [refreshing, setRefreshing] = React.useState(false);
-
-  const wait = (timeout) => {
-    return new Promise((resolve) => setTimeout(resolve, timeout));
-  };
-
-  const onRefresh = React.useCallback(() => {
-    setRefreshing(true);
-    wait(2000).then(() => setRefreshing(false));
-  }, []);
 
   // checks the regex of the entered id
   //if correct saves the id
   // and alert the user
   // if not matched with regex alert user
-  const add_element = () => {
-    const regex = /(sems)[0-9]{3,7}/;
-    if (new_meter.match(regex)) {
+  const add_element = async () => {
+    const regex = /^sems[0-9]{3,7}$/;
+    if (new_meter.match(regex) && !userList.includes(new_meter)) {
       alert("               ✅\n"+new_meter + " added to list");
-      userList.push(new_meter);
-      save_array();
+      let newlist = [...userList,new_meter]
+      set_userList(newlist);
+      try {
+        await AsyncStorage.setItem(STORAGE_KEY2, JSON.stringify(newlist));
+      } catch (e) {
+        alert("Failed to save the data to the storage ❌");
+      }
     } else {
+      userList.includes(new_meter)?alert("               ⚠️\n"+new_meter + " already added to list"):
       alert("               ⚠️\nplease enter correct Id \nId is case sensitive \neg sems000");
     }
   };
 
-  const delete_element = () => {
+  const delete_element = async () => {
     if (userList.length > 1) {
       alert(meterId + " has been deleted 🗑️");
       userList.splice(Number(userList.indexOf(meterId)), 1);
-      setMeterId("");
-      save_array();
+      setMeterId(userList[0]);
+      let newlist = [...userList]
+      set_userList(newlist);
+      try {
+        await AsyncStorage.setItem(STORAGE_KEY2, JSON.stringify([newlist]));
+      } catch (e) {
+        alert("Failed to save the data to the storage ❌");
+      }
     } else alert("Last meter id cannot be deleted ❌");
   };
 

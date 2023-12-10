@@ -269,7 +269,7 @@ class unit extends Component {
 async function schedulePushNotification() {
   await Notifications.scheduleNotificationAsync({
     content: {
-      title: "High Load ☠️⚡",
+      title: "High Load ⚡",
       body: "Load on electricity line is more then 20 unit",
       data: { data: "goes here" },
     },

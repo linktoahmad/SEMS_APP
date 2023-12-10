@@ -237,7 +237,7 @@ class Volts extends Component {
 async function schedulePushNotification() {
   await Notifications.scheduleNotificationAsync({
     content: {
-      title: "Voltage Drop ☠️⚡",
+      title: "Voltage Drop ⚡",
       body: "Line voltages are low pls check the voltmeter",
       data: { data: "goes here" },
     },

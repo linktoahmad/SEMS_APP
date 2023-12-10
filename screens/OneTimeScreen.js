@@ -10,7 +10,7 @@ import {
 import {DataContext} from './DataContext.js';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const regex = /(sems)[0-9]{3,7}/;
+const regex = /^sems[0-9]{3,7}$/;
 
 const OTScreen = () => {
 
@@ -18,15 +18,18 @@ const OTScreen = () => {
   const [meterInput, setMeterInput] = useState("");
 
   const  add_element = async () => {
-    if (meterInput.match(regex)) {
-      alert("✅" + meterInput + " Meter Up");
     let user_List = await AsyncStorage.getItem("@save_array");
-    let newArray = [meterInput,...JSON.parse(user_List||"[]")]
+    user_List = user_List?user_List:"[]"
+if (meterInput.match(regex) && !user_List.includes(meterInput)) {
+      alert("✅" + meterInput + " Meter Up");
+
+        let newArray = [meterInput,...JSON.parse(user_List)]
      AsyncStorage.setItem("@save_array", JSON.stringify(newArray));
     AsyncStorage.setItem("@save_meterId", meterInput);
       setMeterId(meterInput)
 
     } else {
+      user_List.includes(meterInput)?alert("               ⚠️\n"+meterInput + " already added to list"):
       alert(
         "               ⚠️\nplease enter correct Id \nId is case sensitive \neg sems000"
       );
