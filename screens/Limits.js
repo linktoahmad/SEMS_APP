@@ -1,18 +1,17 @@
-import React, { useState, useEffect, useContext } from "react";
-import { StyleSheet, TextInput } from "react-native";
-import ProgressCircle from "react-native-progress-circle";
-import * as Notifications from "expo-notifications";
-import { Block, Text, Switch, Button } from "../components";
-import { theme } from "../constants";
-import AsyncStorage from "@react-native-community/async-storage";
-import firebase from "firebase";
-import {DataContext} from './DataContext.js';
+import React, { useState, useEffect, useContext } from 'react';
+import { StyleSheet, TextInput } from 'react-native';
+import ProgressCircle from 'react-native-progress-circle';
+import * as Notifications from 'expo-notifications';
+import { Block, Text, Switch, Button } from '../components';
+import { theme } from '../constants';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import firebase from 'firebase';
+import { DataContext } from './DataContext.js';
 
-const STORAGE_KEY = "@save_unit";
-const STORAGE_KEY2 = "@save_Load";
-const STORAGE_KEY3 = "@save_not1";
-const STORAGE_KEY4 = "@save_not2";
-
+const STORAGE_KEY = '@save_unit';
+const STORAGE_KEY2 = '@save_Load';
+const STORAGE_KEY3 = '@save_not1';
+const STORAGE_KEY4 = '@save_not2';
 
 var unit_per = 0;
 var load_per = 0;
@@ -21,40 +20,45 @@ Notifications.setNotificationHandler({
   handleNotification: async () => ({
     shouldShowAlert: true,
     shouldPlaySound: false,
-    shouldSetBadge: false,
-  }),
+    shouldSetBadge: false
+  })
 });
 
 const App = () => {
+  const { meterId } = useContext(DataContext);
 
-  const {meterId} = useContext(DataContext)
+  const [unit_limit, setUnit] = useState('');
+  const [load_limit, setLoad] = useState('');
+  const [not1, setNot1] = useState('');
+  const [not2, setNot2] = useState('');
 
+  const [unit_read, set_unit_read] = useState(0);
+  const [load_read, set_load_read] = useState(0);
 
-  const [unit_limit, setUnit] = useState("");
-  const [load_limit, setLoad] = useState("");
-  const [not1, setNot1] = useState("");
-  const [not2, setNot2] = useState("");
-
-const [unit_read, set_unit_read] = useState(0);
-const [load_read, set_load_read] = useState(0);
-
-
-    useEffect(() => {
+  useEffect(() => {
     // Set up a listener for real-time updates
-    const ampsListener = firebase.database().ref(`${meterId}/amps`).on("value", (snapshot) => {
-      set_load_read(snapshot.val());
-    });
-    const unitListner = firebase.database().ref(`${meterId}/Month_unit`).on("value", (snapshot) => {
-      set_unit_read(snapshot.val());
-    });
+    const ampsListener = firebase
+      .database()
+      .ref(`${meterId}/amps`)
+      .on('value', (snapshot) => {
+        set_load_read(snapshot.val());
+      });
+    const unitListner = firebase
+      .database()
+      .ref(`${meterId}/Month_unit`)
+      .on('value', (snapshot) => {
+        set_unit_read(snapshot.val());
+      });
 
     // Clean up the listener when the component unmounts
     return () => {
-      firebase.database().ref(`${meterId}/amps`).off("value", ampsListener);
-      firebase.database().ref(`${meterId}/Month_unit`).off("value", unitListner);
+      firebase.database().ref(`${meterId}/amps`).off('value', ampsListener);
+      firebase
+        .database()
+        .ref(`${meterId}/Month_unit`)
+        .off('value', unitListner);
     };
   }, [meterId]); // Ensure that the listener is re-established when meterId changes
-
 
   useEffect(() => {
     readData();
@@ -84,7 +88,7 @@ const [load_read, set_load_read] = useState(0);
         setNot2(not2);
       }
     } catch (e) {
-      alert("Failed lo load_limit! ❌");
+      alert('Failed lo load_limit! ❌');
     }
   };
 
@@ -100,9 +104,9 @@ const [load_read, set_load_read] = useState(0);
       setNot1(not1);
       await AsyncStorage.setItem(STORAGE_KEY4, JSON.stringify(not2));
       setNot2(not2);
-      alert("successfully saved ✅");
+      alert('successfully saved ✅');
     } catch (e) {
-      alert("Failed! ❌");
+      alert('Failed! ❌');
     }
   };
 
@@ -112,13 +116,13 @@ const [load_read, set_load_read] = useState(0);
       await AsyncStorage.removeItem(STORAGE_KEY2);
       await AsyncStorage.removeItem(STORAGE_KEY3);
       await AsyncStorage.removeItem(STORAGE_KEY4);
-      setLoad("");
-      setUnit("");
+      setLoad('');
+      setUnit('');
       setNot1(false);
       setNot2(false);
-      alert("cleared! ✅");
+      alert('cleared! ✅');
     } catch (e) {
-      alert("Failed to clear ❌");
+      alert('Failed to clear ❌');
     }
   };
 
@@ -131,13 +135,13 @@ const [load_read, set_load_read] = useState(0);
   const onSubmitEditing = () => {
     if (!unit_limit) return;
     saveData(unit_limit);
-    setUnit("");
+    setUnit('');
   };
 
   const onSubmitEditing2 = () => {
     if (!load_limit) return;
     saveData(load_limit);
-    setLoad("");
+    setLoad('');
   };
 
   if (unit_read >= unit_limit && unit_limit != 0 && not1 == true) {
@@ -160,60 +164,60 @@ const [load_read, set_load_read] = useState(0);
 
   return (
     <Block>
-      <Block flex={false} row center space="between" style={styles.header}>
-        <Text  bold>
-          Set Limit
-        </Text>
+      <Block flex={false} row center space='between' style={styles.header}>
+        <Text bold>Set Limit</Text>
         <Text h2 bold center style={{ color: theme.colors.secondary }}>
           {meterId}
         </Text>
       </Block>
 
       <Block style={styles.header}>
-        <Block row center space="between" style={{ flex: 0.1 }}>
+        <Block row center space='between' style={{ flex: 0.1 }}>
           <Text gray>Activate Unit Limit</Text>
           <Switch value={not1} onValueChange={onChangeNot1} />
         </Block>
-        <Block row center space="between" style={{ flex: 0.1 }}>
+        <Block row center space='between' style={{ flex: 0.1 }}>
           <Text gray>Set Unit Limit</Text>
           <TextInput
             style={styles.input}
-            keyboardType="numeric"
+            keyboardType='numeric'
             maxLength={3}
             value={unit_limit}
-            placeholder="Enter Unit"
+            placeholder='Enter Unit'
             onChangeText={onChangeText}
             onSubmitEditing={onSubmitEditing}
           />
         </Block>
-        <Block row center space="between" style={{ flex: 0.1 }}>
+        <Block row center space='between' style={{ flex: 0.1 }}>
           <Text gray>Activate Load Limit</Text>
           <Switch value={not2} onValueChange={onChangeNot2} />
         </Block>
-        <Block row center space="between" style={{ flex: 0.1 }}>
+        <Block row center space='between' style={{ flex: 0.1 }}>
           <Text gray>Set Load Limit</Text>
           <TextInput
             style={styles.input}
-            keyboardType="numeric"
+            keyboardType='numeric'
             maxLength={3}
             value={load_limit}
-            placeholder="Enter Load"
+            placeholder='Enter Load'
             onChangeText={onChangeText2}
             onSubmitEditing={onSubmitEditing2}
           />
         </Block>
 
-        <Block style={[{ paddingTop: 20 }, { flexDirection: "row" }]}>
+        <Block style={[{ paddingTop: 20 }, { flexDirection: 'row' }]}>
           <Block center>
             <ProgressCircle
               percent={Number(unit_per)}
               radius={60}
               borderWidth={30}
-              color="#4287f5"
-              shadowColor="#999"
-              bgColor="#fff"
+              color='#4287f5'
+              shadowColor='#999'
+              bgColor='#fff'
             >
-              <Text style={{ fontSize: 15 }}>{unit_per>100?100+"%":unit_per + "%"}</Text>
+              <Text style={{ fontSize: 15 }}>
+                {unit_per > 100 ? 100 + '%' : unit_per + '%'}
+              </Text>
             </ProgressCircle>
             <Text gray>Unit Consumed</Text>
           </Block>
@@ -222,11 +226,13 @@ const [load_read, set_load_read] = useState(0);
               percent={Number(load_per)}
               radius={60}
               borderWidth={30}
-              color="#4287f5"
-              shadowColor="#999"
-              bgColor="#fff"
+              color='#4287f5'
+              shadowColor='#999'
+              bgColor='#fff'
             >
-              <Text style={{ fontSize: 15 }}>{load_per>100?100+"%":load_per + "%"}</Text>
+              <Text style={{ fontSize: 15 }}>
+                {load_per > 100 ? 100 + '%' : load_per + '%'}
+              </Text>
             </ProgressCircle>
             <Text gray>Load Consumed</Text>
           </Block>
@@ -249,24 +255,22 @@ const [load_read, set_load_read] = useState(0);
 async function scheduleLoadPushNotification() {
   await Notifications.scheduleNotificationAsync({
     content: {
-      title: "Load Alarm ⚡",
-      body:
-        "You have reached the load limit",
-      data: { data: "goes here" },
+      title: 'Load Alarm ⚡',
+      body: 'You have reached the load limit',
+      data: { data: 'goes here' }
     },
-    trigger: { seconds: 2 },
+    trigger: { seconds: 2 }
   });
 }
 
 async function scheduleUnitPushNotification() {
   await Notifications.scheduleNotificationAsync({
     content: {
-      title: "Unit Alarm ⚡",
-      body:
-        "You reached the unit limit",
-      data: { data: "goes here" },
+      title: 'Unit Alarm ⚡',
+      body: 'You reached the unit limit',
+      data: { data: 'goes here' }
     },
-    trigger: { seconds: 2 },
+    trigger: { seconds: 2 }
   });
 }
 
@@ -274,10 +278,10 @@ export default App;
 
 const styles = StyleSheet.create({
   header: {
-    paddingHorizontal: theme.sizes.base * 2,
+    paddingHorizontal: theme.sizes.base * 2
   },
   input: {
     borderBottomWidth: 1.5,
-    borderBottomColor: "#333",
-  },
+    borderBottomColor: '#333'
+  }
 });
