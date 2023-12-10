@@ -1,25 +1,25 @@
 import React, { createContext, useEffect, useState } from 'react';
-import AsyncStorage from "@react-native-community/async-storage";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // Create a context
 export const DataContext = createContext();
 
 // Create the DataProvider component
 const DataProvider = ({ children }) => {
-  const [meterId, setMeterId] = useState("");
+  const [meterId, setMeterId] = useState('');
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         // Get the user_meterId from AsyncStorage
-        const user_meterId = await AsyncStorage.getItem("@save_meterId");
+        const user_meterId = await AsyncStorage.getItem('@save_meterId');
 
         // If user_meterId is available, set it to the meterId state
         if (user_meterId) {
           setMeterId(user_meterId);
         }
       } catch (error) {
-        console.error("Error fetching user_meterId", error);
+        console.error('Error fetching user_meterId', error);
       }
     };
 

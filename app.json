@@ -30,7 +30,12 @@
       "useNextNotificationsApi": true,
       "userInterfaceStyle": "dark",
       "package": "com.sems.app"
-      
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "9b3a7689-f661-40a7-88df-20371eb5ca28"
+      }
+    },
+    "owner": "ahmed91991"
   }
 }
