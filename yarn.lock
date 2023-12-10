@@ -9116,11 +9116,6 @@ react-native-svg@12.1.0:
     css-select "^2.1.0"
     css-tree "^1.0.0-alpha.39"
 
-react-native-system-notification@^0.2.1:
-  version "0.2.1"
-  resolved "https://registry.yarnpkg.com/react-native-system-notification/-/react-native-system-notification-0.2.1.tgz#ef3276858ff310f5891076eccd8214db78853465"
-  integrity sha1-7zJ2hY/zEPWJEHbszYIU23iFNGU=
-
 react-native-table-component@^1.2.1:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/react-native-table-component/-/react-native-table-component-1.2.1.tgz#5f1e0f159b1dff9df0d5601c4a5ab99d1aa99a25"
