@@ -13,8 +13,6 @@ const STORAGE_KEY2 = "@save_Load";
 const STORAGE_KEY3 = "@save_not1";
 const STORAGE_KEY4 = "@save_not2";
 
-var unit_read = 0;
-var load_read = 0;
 
 var unit_per = 0;
 var load_per = 0;
@@ -31,31 +29,35 @@ const App = () => {
 
   const {meterId} = useContext(DataContext)
 
-  const getData = () => {
-    firebase
-      .database()
-      .ref(meterId.toString() + "/amps")
-      .on("value", function (snapshot) {
-        load_read = snapshot.val();
-      });
-    firebase
-      .database()
-      .ref(meterId.toString() + "/Month_unit")
-      .on("value", function (snapshot) {
-        unit_read = snapshot.val();
-      });
-  };
 
   const [unit_limit, setUnit] = useState("");
   const [load_limit, setLoad] = useState("");
   const [not1, setNot1] = useState("");
   const [not2, setNot2] = useState("");
 
-  getData();
+const [unit_read, set_unit_read] = useState(0);
+const [load_read, set_load_read] = useState(0);
+
+
+    useEffect(() => {
+    // Set up a listener for real-time updates
+    const ampsListener = firebase.database().ref(`${meterId}/amps`).on("value", (snapshot) => {
+      set_load_read(snapshot.val());
+    });
+    const unitListner = firebase.database().ref(`${meterId}/Month_unit`).on("value", (snapshot) => {
+      set_unit_read(snapshot.val());
+    });
+
+    // Clean up the listener when the component unmounts
+    return () => {
+      firebase.database().ref(`${meterId}/amps`).off("value", ampsListener);
+      firebase.database().ref(`${meterId}/Month_unit`).off("value", unitListner);
+    };
+  }, [meterId]); // Ensure that the listener is re-established when meterId changes
+
 
   useEffect(() => {
     readData();
-    getData();
   }, []);
 
   // read data
@@ -211,7 +213,7 @@ const App = () => {
               shadowColor="#999"
               bgColor="#fff"
             >
-              <Text style={{ fontSize: 15 }}>{unit_per + "%"}</Text>
+              <Text style={{ fontSize: 15 }}>{unit_per>100?100+"%":unit_per + "%"}</Text>
             </ProgressCircle>
             <Text gray>Unit Consumed</Text>
           </Block>
@@ -224,7 +226,7 @@ const App = () => {
               shadowColor="#999"
               bgColor="#fff"
             >
-              <Text style={{ fontSize: 15 }}>{load_per + "%"}</Text>
+              <Text style={{ fontSize: 15 }}>{load_per>100?100+"%":load_per + "%"}</Text>
             </ProgressCircle>
             <Text gray>Load Consumed</Text>
           </Block>
@@ -247,9 +249,9 @@ const App = () => {
 async function scheduleLoadPushNotification() {
   await Notifications.scheduleNotificationAsync({
     content: {
-      title: "Load Alarm ☠️⚡",
+      title: "Load Alarm ⚡",
       body:
-        "You are consuming more load_limit then the limit you set. Now the limit has been increased",
+        "You have reached the load limit",
       data: { data: "goes here" },
     },
     trigger: { seconds: 2 },
@@ -259,9 +261,9 @@ async function scheduleLoadPushNotification() {
 async function scheduleUnitPushNotification() {
   await Notifications.scheduleNotificationAsync({
     content: {
-      title: "Unit Alarm ☠️⚡",
+      title: "Unit Alarm ⚡",
       body:
-        "You have consumed more units then the limit you set. Now the limit has been increased",
+        "You reached the unit limit",
       data: { data: "goes here" },
     },
     trigger: { seconds: 2 },

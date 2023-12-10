@@ -45,32 +45,28 @@ class Settings extends Component {
 
             // switch case to determine unit cost accordingly to unit count
             switch (true) {
-              case unit_value <= 50:
-                unit_cost = 3.95;
-                Electricity_cost = unit_value * unit_cost;
-                break;
-              case unit_value > 50 && unit_value <= 100:
-                unit_cost = 7.74;
+              case unit_value <= 100:
+                unit_cost = 13.48;
                 Electricity_cost = unit_value * unit_cost;
                 break;
               case unit_value > 100 && unit_value <= 200:
-                unit_cost = 10.06;
-                sub_total = 100 * 7.74;
+                unit_cost = 18.95;
+                sub_total = 100 * 18.95;
                 Electricity_cost = (unit_value - 100) * unit_cost + sub_total;
                 break;
               case unit_value > 200 && unit_value <= 300:
-                unit_cost = 12.15;
-                sub_total = 200 * 10.06;
+                unit_cost = 22.14;
+                sub_total = 200 * 22.14;
                 Electricity_cost = (unit_value - 200) * unit_cost + sub_total;
                 break;
-              case unit_value > 300 && unit_value <= 700:
-                unit_cost = 19.5;
-                sub_total = 300 * 12.15;
+              case unit_value > 300 && unit_value <= 500:
+                unit_cost = 25.53;
+                sub_total = 300 * 25.53;
                 Electricity_cost = (unit_value - 300) * unit_cost + sub_total;
                 break;
-              case unit_value > 700:
-                unit_cost = 22.65;
-                sub_total = 700 * 19.5;
+              case unit_value > 500:
+                unit_cost = 27.65;
+                sub_total = 500 * 27.65;
                 Electricity_cost = (unit_value - 700) * unit_cost + sub_total;
                 break;
             }

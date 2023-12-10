@@ -237,7 +237,7 @@ class Amps extends Component {
 async function schedulePushNotification() {
   await Notifications.scheduleNotificationAsync({
     content: {
-      title: "High Load ☠️⚡",
+      title: "High Load ⚡",
       body: "Load on electricity line is more then 20 amps",
       data: { data: "goes here" },
     },
