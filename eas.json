@@ -10,7 +10,12 @@
     "preview": {
       "distribution": "internal"
     },
-    "production": {}
+    "production": {
+      "node": "16.18.1"
+    },
+    "android": {
+      "node": "16.18.1"
+    }
   },
   "submit": {
     "production": {}
